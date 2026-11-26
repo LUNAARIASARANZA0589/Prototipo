@@ -28,18 +28,17 @@ from flask import (Flask, jsonify, redirect, render_template, request, send_file
 from pymongo import DESCENDING
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from gestor import (DATOSALUMNO, DATOSCANALIZACION, DIRECCIONPDFS, fecha,
-                    conectar, filtro, pdf, importar, limpiar)
+from gestor import (DATOSALUMNO, DATOSCANALIZACION, DIRECCIONPDFS, fecha, conectar, filtro, pdf, importar, limpiar)
 
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024  
+app.config["longitud"] = 20 * 1024 * 1024  
 db = conectar()
 db.usuarios.create_index("usuario", unique=True)
 
 #La secret key es jejebollo JAJAJASJASJH
-def llave_secreta():
-    if os.getenv("SECRET_KEY"):
-        return os.environ["SECRET_KEY"]
+def llavesecreta():
+    if os.getenv("key"):
+        return os.environ["key"]
     f = Path(".secret_key")  
     if not f.exists():
         f.write_text(secrets.token_hex(32))
@@ -50,9 +49,8 @@ def llave_secreta():
     return f.read_text().strip()
 
 
-app.secret_key = llave_secreta()
-app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
-                  PERMANENT_SESSION_LIFETIME=8 * 3600)  
+app.secret_key = llavesecreta()
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax", PERMANENT_SESSION_LIFETIME=8 * 3600)  
 INTENTOS = {} 
 MAX_FALLOS, BLOQUEO_SEG = 5, 300
 
