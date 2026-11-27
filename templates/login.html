@@ -102,35 +102,20 @@
     </div>
 </br>
 </br>
-
-
-
-
-
-
-
-
-
-
     <div class="card">
 </br>
 </br>
-        <h1 class="hpanel">Sistema Gestor De Base De Datos Para Orientacion Educativa Jaguares</h1>
+        <h1 class="hpanel">Sistema Gestor De Base De Datos Para Orientacion Educativa Jaguar</h1>
 </br>
 </br>
 </br>
-
-
-        <p id="message" class="p"></p>
-        <input type="email" name="email" class="inl" placeholder="Correo electrónico" required></input>
-</br>
-</br>
-</br>
-        <input type="password" name="password" class="inl" placeholder="Contraseña" minlength="6" required></input>
-</br>
-</br>
-</br>
-        <button class="button" type="submit" name="action" value="login">Iniciar sesión</button>
+<form method="post">
+<label for="usuario">Usuario</label>
+<input id="usuario" name="usuario" autocomplete="username" autofocus required>
+<label for="clave">Contraseña</label>
+<input id="clave" name="clave" type="password" autocomplete="current-password" required>
+<button type="submit">Entrar</button>
+{% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}">
 </br>
 </br>
 </br>
@@ -141,4 +126,5 @@
         </form>
     </div>
 </body>
+
 </html>
