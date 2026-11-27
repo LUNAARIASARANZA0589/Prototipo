@@ -5,30 +5,140 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Iniciar sesión · Orientación</title>
 <style>
-:root{--vino:#4E0F22;--borgona:#7A1F3D;--hueso:#F8F2F3;--suave:#7C6168;--tinta:#2B1219}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;place-items:center;font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tinta);background:linear-gradient(160deg,var(--vino) 0 42%,var(--hueso) 42%)}
-form{background:#fff;width:min(380px,92vw);padding:34px 30px;border-radius:12px;box-shadow:0 18px 50px rgba(43,18,25,.3)}
-h1{font:700 24px/1.2 Georgia,"Times New Roman",serif;color:var(--vino);margin:0 0 4px}
-p{margin:0 0 22px;color:var(--suave)}
-label{display:block;font-size:13px;font-weight:600;color:var(--suave);margin:14px 0 4px}
-input{width:100%;font:inherit;padding:10px 12px;border:1px solid #CDB3BA;border-radius:6px}
-input:focus{outline:3px solid rgba(122,31,61,.25);border-color:var(--borgona)}
-button{margin-top:22px;width:100%;background:var(--borgona);color:#fff;border:0;padding:12px;border-radius:6px;font:600 15px inherit;font-family:inherit;cursor:pointer}
-button:hover{background:var(--vino)}
-.error{margin-top:16px;padding:10px 12px;background:#F4E4E8;border-left:4px solid var(--borgona);border-radius:4px;font-size:14px}
+    @font-face {
+        font-family: 'SamsungOne';
+        src: url('ruta/a/SamsungOne-400.woff2') format('woff2'),
+            url('ruta/a/SamsungOne-400.woff') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'SamsungOne';
+        src: url('ruta/a/SamsungOne-700.woff2') format('woff2'),
+            url('ruta/a/SamsungOne-700.woff') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+    }
+    body {
+        background-color: #749feeb2;
+        background-image:
+            radial-gradient(circle at 0% 0%, rgb(77, 127, 233) 0%, transparent 45%),
+            radial-gradient(circle at 18% 5%, rgba(83, 177, 255, 0.45) 0%, transparent 40%);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        min-height: 100vh;
+        font-family: 'SamsungOne', sans-serif;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+    .card{
+        background-color: #ebebebbd;
+            width: 100%;
+            max-width: 420px;
+            padding: 50px 100px;
+            text-align: center;
+            box-sizing: border-box;
+            align-items: center;
+            border-radius: 18px;
+            justify-content: center;
+            margin: 40px auto;
+            gap: 30px;
+            backdrop-filter: blur(20px);
+            flex-direction: column;
+
+
+        }
+    .hpanel{
+        text-align: center;
+        color: #000000;
+        font-size: 35px;
+        font-weight: 500;
+        font-family: "SamsungOne", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: -0.2px;
+        text-decoration: none;
+        margin-top: 0;
+        margin-bottom: 30px;
+        padding: 0;
+    }
+    .p{
+        text-align: center;
+        color: #000000;
+        font-size: 17px;
+    }
+    .inl{
+            border: none;
+            border-bottom: 0.1px solid #303030;
+            outline: none;
+            position: relative;
+            background-color: transparent;
+            max-width: 100%;
+            max-height: 30px;
+            font-size: 16px;
+            color: #414244;
+        }
+        .button{
+            background-color: rgb(94, 129, 194);
+            color:white;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: "SamsungOne", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+            letter-spacing: -0.2px;
+            text-decoration: none;
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            width: 220px;
+        }
 </style>
 </head>
 <body>
-<form method="post">
-  <h1>Departamento de Orientación</h1>
-  <p>Inicia sesión para ver y registrar canalizaciones.</p>
-  <label for="usuario">Usuario</label>
-  <input id="usuario" name="usuario" autocomplete="username" autofocus required>
-  <label for="clave">Contraseña</label>
-  <input id="clave" name="clave" type="password" autocomplete="current-password" required>
-  <button type="submit">Entrar</button>
-  {% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
-</form>
+    <div class="orbes">
+        <div class="orbe">
+    <div class="orbe-1">
+    </div>
+</br>
+</br>
+
+
+
+
+
+
+
+
+
+
+    <div class="card">
+</br>
+</br>
+        <h1 class="hpanel">Sistema Gestor De Base De Datos Para Orientacion Educativa Jaguares</h1>
+</br>
+</br>
+</br>
+
+
+        <p id="message" class="p"></p>
+        <input type="email" name="email" class="inl" placeholder="Correo electrónico" required></input>
+</br>
+</br>
+</br>
+        <input type="password" name="password" class="inl" placeholder="Contraseña" minlength="6" required></input>
+</br>
+</br>
+</br>
+        <button class="button" type="submit" name="action" value="login">Iniciar sesión</button>
+</br>
+</br>
+</br>
+</br>
+</br>
+    </form>
+</div>
+        </form>
+    </div>
 </body>
 </html>
