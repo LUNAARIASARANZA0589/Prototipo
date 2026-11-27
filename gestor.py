@@ -1,4 +1,3 @@
-
 import json
 import os
 import re
@@ -6,6 +5,9 @@ import shlex
 import sys
 import time
 import unicodedata
+
+
+#Esta libreria nos da la fecha exacta para cada uno de los reportes, así la fecha no tiene que ingresarse a mano. 
 from datetime import date
 
 #Librería para utilizar directorios y rutas de archivos. 
@@ -70,25 +72,32 @@ def cargarenv(ruta=".env"):
 
 #Estas son constantes, variables que por nada del mundo se deben cambiar, si quieren modificar algún dato de la conexión, debe hacerse en el archivo .env, no aquí.
 cargarenv()
+#os.getenv significa que el sistema obtiene los siguientes datos directamente de nuestro documento .env
 MONGOURI = os.getenv("MONGOURI", "mongodb+srv://departamentoorientacion128_db_user:K7GMu6bztEYNpD@bdorientacion.rtlyomr.mongodb.net/")
 DBNAME = os.getenv("DBNAME", "BDOrientacion")
 ESCUELA = os.getenv("ESCUELA", "Centro de bachillerato Tecnológico Industrial y de Servicios No. 128")
+#Esta Path a la dirección donde se guardan los datos que se importan y exportan en el programa, este crea una nueva carpeta creada datos_json que contiene los documentos que se agreguen
 DATOSJSON = Path("datos_json")
 #Esta es la direccion a la cual se guardan los archivos PDF
 DIRECCIONPDFS = Path("reportes")
 TIMEOUT = int(os.getenv("MONGO_TIMEOUT_MS", "10000"))
+#Esta variable define un tiempo máximo de espera de 1000 milisegundos, osea, 10 segundos obtenida de una variable, si no encuentra la variable, le asigna un valor de 1000 por defecto
 DIRECCIONEXPORTAR = Path("exportaciones")
+#Esta es la dirección a la cual se va a guardar la base de datos o archivos que se exporten del programa
 
+
+#Estos son todos los datos que son tomados en cuenta al momento de guardar una consulta.
 DATOSALUMNO = [
-    "numero_control", "apellido_paterno", "apellido_materno", "nombre",
-    "generacion", "especialidad", "semestre", "grupo", "turno",
-    "nombre_padre_madre", "telefono",
+    "numero_control", "apellido_paterno", "apellido_materno", "nombre", "generacion", "especialidad", "semestre", "grupo", "turno", "nombre_padre_madre", "telefono",
 ]
 
+#Estos son los datos que se toman en cuenta al momento de generar la canalización, son los datos que se rellenan manualmente ya que cambian en cada alumno o situación
 DATOSCANALIZACION = [
     "fecha_atencion", "persona_reporta", "motivo",
     "medida_modificacion_conducta", "seguimiento_documentos",
 ]
+
+#Estas etiquetas son las que se usan para llenar los encabezados de cada aspecto con el mismo nombre, cada uno ligado a una varible y a su vez, a un valor
 ETIQUETAS = {
     "fecha_atencion": "Fecha de atención",
     "numero_control": "Número de control",
@@ -109,6 +118,7 @@ ETIQUETAS = {
     "canalizaciones_anteriores": "Número de canalizaciones anteriores",
 }
 
+#Estos alias son como backups, si el nombre original no sirve, el programa busca otras parecidas, como las que ya establecimos
 ALIAS = {
     "numero_control": ["numero_de_control", "no_control", "n_control", "control", "matricula", "num_control"],
     "fecha_atencion": ["fecha_de_atencion", "fecha"],
@@ -156,11 +166,15 @@ def urioculta(uri: str) -> str:
     return re.sub(r"://([^:/@]+):[^@]+@", r"://\1:****@", uri)
 
 
+#Esta es la funcion que hace nuestra conexión a la base de datos de una manera más formal, se establece un tiempo de espera
+# de 10 segundos, aquí establecemos nuestro cliente, el nombre de nuestra base de datos y se crean nuestros documentos 
+
+#Así como se evalúa un error de conexión en caso de que la URI (MONGOURI ya establecida en el env) sea incorrecta o el servicio 
+#no esté encendido, tambíén se detalla el tipo de error que presenta, para tener una mejor evaluación de errores e identificarlo
+#rápido y solucionarlo igual. 
 def conectar():
     try:
-        cliente = MongoClient(MONGOURI, serverSelectionTimeoutMS=TIMEOUT,
-                              connectTimeoutMS=TIMEOUT, maxPoolSize=20,
-                              appname="BD_Orientacion")
+        cliente = MongoClient(MONGOURI, serverSelectionTimeoutMS=TIMEOUT,connectTimeoutMS=TIMEOUT, maxPoolSize=20, appname="BD_Orientacion")
         db = cliente[DBNAME]
         cliente.admin.command("ping")
         db.alumnos.create_index("numero_control", unique=True)
@@ -176,6 +190,8 @@ def conectar():
     return db
 
 
+#Esta función nos indica el estado de la conexión, es un simple binario, si está encendida marca True, sino, marca False
+#Aquí tambien imprimimos el tipo de error para poder manejarlo y saber exactamente que pasa. 
 def estadoconexion(db) -> dict:
     t = time.perf_counter()
     try:
@@ -187,12 +203,13 @@ def estadoconexion(db) -> dict:
 
 
 #Autocompletado con el número de control. 
+#Usamos la función completer de prompt_toolkit 
 class ControlCompleter(Completer):
 
     def __init__(self, db):
         self.db = db
 
-    def get_completions(self, document, complete_event):
+    def getcompletions(self, document, complete_event):
         txt = document.text.strip()
         if not txt:
             return
@@ -212,13 +229,21 @@ def preguntar(msg, default="", completer=None) -> str:
     return r or default
 
 
-
+#Estas son las "macros", inspiradas en Excel, son ciertas cositas que ya tienen funciones predeterminadas con ellas podemos
+#realizar reportes, guardar dichos reportes, importar y exportar datos, filtrar canalizaciones pasadas y consultar datos. 
 MACROS = {}
 
+#Cada macro se define por su nombre y una pequeña descripción que le indica a la persona para que sirve dicha macro
+#a función recibe los datos de la función que se le asigna, y la "decora", le da un nombre y una descripción, para que pueda ser usada en el programa.
 def macro(nombre, ayuda):
+    #Esta función es un decorador que permite registrar una función como un macro en el diccionario MACROS.
+    #El decorador toma el nombre y la descripción del macro como argumentos y los almacena en el diccionario MACROS junto con la función decorada.
     def deco(fn):
+        #Esta función toma la funcion que estamos usando y la agrega al diccionario MACROS, con su nombre y descripción, para que pueda ser usada en el programa, sin alterar su funcionamiento original. 
         MACROS[nombre] = (fn, ayuda)
+        #Cada macro se guarda en el diccionario original con su nombre y su funcion, sin alterar su funcionamiento original, para que pueda ser usada en el programa.
         return fn
+    #FInalmente se devuelve la funcion original y el mini decorado que le dió, solamente agrega el nombre y la función. 
     return deco
 
 
@@ -367,28 +392,44 @@ def recalcular_anteriores(db, controles):
 @macro("registrar", "registrar — Genera un nuevo reporte de canalización para un alumno (por número de control).")
 def registrar(db, args):
     control = preguntar("Número de control", completer=ControlCompleter(db) if pt_prompt else None)
+    #Primero se requiere el número de control del alumno, si no se ingresa, la función termina y no hace nada.  
     if not control:
+        #Si el número de control no se ingresa, la función termina y no hace nada.
         return
     alumno = db.alumnos.find_one({"numero_control": control}, {"_id": 0})
+    #Se registra al alumno en la base de datos, si no existe, se crea un nuevo registro con el número de control ingresado.
     if alumno:
         print(f"Alumno: {alumno.get('apellido_paterno','')} {alumno.get('apellido_materno','')} {alumno.get('nombre','')}")
+        #Si el alumno ya existe, se muestra su nombre completo y se le pregunta si desea continuar con la canalización.
     else:
         print("Alumno nuevo: Capture todos los datos.")
         alumno = {"numero_control": control}
+        #En caso de que sea un alumno nuevo, se le pide que capture todos los datos del alumno, y se crea un nuevo registro con el número de control ingresado.
     datos = {"numero_control": control}
+    #Se crea un diccionario con el número de control del alumno, que se usará para guardar los datos del alumno y la canalización.
     for campo in DATOSALUMNO[1:]:  
+        #Por cada campo dentro de los requerimientos de los datos del alumno, se le dice al usuario que ingrese el valor correspondiente, si el alumno ya existe, se muestra el valor actual como valor por defecto.
         datos[campo] = preguntar(ETIQUETAS[campo], alumno.get(campo, ""))
+        #En caso de que el campo este lleno, simplemente se obtiene la información con el get()
     datos["fecha_atencion"] = fecha(preguntar(ETIQUETAS["fecha_atencion"], date.today().isoformat()))
+    #La fecha de atención se obtiene con la función fecha(), que convierte la fecha del dia del reporte en un formato date para usarla en el formulario.
     for campo in DATOSCANALIZACION[1:]:
+        #Hacemos lo mismo con los datos de la canalizacion. 
         datos[campo] = preguntar(ETIQUETAS[campo])
         #Funciones CRUD, como update, insert, count, vitales de Mongo para acceder y manejar los documentos. 
     datos["canalizaciones_anteriores"] = db.canalizaciones.count_documents({"numero_control": control})
-    db.alumnos.update_one({"numero_control": control},
-                          {"$set": {k: datos[k] for k in DATOSALUMNO}}, upsert=True)
+    #Se cuenta el número de canalizaciones anteriores del alumno, para poder mostrarlo en el reporte y en la base de datos.
+    #Lo unico que se hace es un conteo de documentos, se cuenta cada documento ligado al numero de control del alumno. 
+    db.alumnos.update_one({"numero_control": control}, {"$set": {k: datos[k] for k in DATOSALUMNO}}, upsert=True)
     db.canalizaciones.insert_one(datos)
+    #Finalemente cuando se termina de llenar el formulario, se actualiza la informacion con todo lo que se capturo dentro del diccionario datos. 
     print(f"Reporte guardado (anteriores: {datos['canalizaciones_anteriores']}).")
+    #Muestra el numero de canalizaciones anteriores despues de generar una nueva
     if preguntar("¿Generar PDF ahora? (s/n)", "s").lower().startswith("s"):
+        #Se le pregunta al usuario si desea generar un PDF, esta como si por defecto para que sea automatico en cierta parte
         ruta = pdf([datos], f"canalizacion_{control}_{datos['fecha_atencion']}.pdf")
+        #Simplemente generamos un pdf con la informacion capturada, se usa el número de control, el numero de canalizacion y la fecha del reporte. 
+        #Quedado algo asi: canalizacion_24308051280589_2026-11-12
         print(f"PDF guardado en: {ruta}")
         #Path de aqui: Carpeta reportes. 
 
@@ -444,7 +485,7 @@ def pdf(docs, nombre_archivo) -> Path:
     ruta = DIRECCIONPDFS / nombre_archivo
     est = getSampleStyleSheet()
     titulo = ParagraphStyle("t", parent=est["Title"], fontSize=15, spaceAfter=2)
-    sub = ParagraphStyle("s", parent=est["Normal"], alignment=1, fontSize=10, textColor=colors.grey)
+    sub = ParagraphStyle("s", parent=est["Normal"], alignment=1, fontSize=10, textColor=colors.navy)
     cel = ParagraphStyle("c", parent=est["Normal"], fontSize=9.5, leading=12)
     etq = ParagraphStyle("e", parent=cel, fontName="Helvetica-Bold")
 
@@ -452,7 +493,7 @@ def pdf(docs, nombre_archivo) -> Path:
     historia = []
     for i, d in enumerate(docs):
         historia += [Paragraph(ESCUELA, titulo),
-                     Paragraph("Canalización por parte del departamento de Orientación", sub),
+                     Paragraph("Sistema Gestor de Base de Datos para Orientación Educativa Jaguar", sub),
                      Paragraph("<b>Reporte de docente hacia alumno</b>", ParagraphStyle("r", parent=sub, fontSize=12, textColor=colors.black, spaceBefore=6)),
                      Spacer(1, 14)]
         orden = ["fecha_atencion", "numero_control", "apellido_paterno", "apellido_materno", "nombre","generacion", "especialidad", "semestre", "grupo", "turno","persona_reporta", "nombre_padre_madre", "telefono"]
@@ -476,8 +517,7 @@ def pdf(docs, nombre_archivo) -> Path:
         tl.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.4, colors.grey),("BACKGROUND", (0, 0), (0, -1), colors.whitesmoke),("VALIGN", (0, 0), (-1, -1), "TOP")]))
         historia += [tl, Spacer(1, 70)]
 
-        firmas = Table([["______________________", "______________________", "______________________"],
-                        ["Orientador(a)", "Alumno(a)", "Padre / madre / tutor"]], colWidths=[5.7 * cm] * 3)
+        firmas = Table([["______________________", "______________________", "______________________"],["Orientador(a)", "Alumno(a)", "Padre / madre / tutor"]], colWidths=[5.7 * cm] * 3)
         firmas.setStyle(TableStyle([("ALIGN", (0, 0), (-1, -1), "CENTER"), ("FONTSIZE", (0, 0), (-1, -1), 9)]))
         historia.append(firmas)
         if i < len(docs) - 1:
