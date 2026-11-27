@@ -108,6 +108,7 @@
     .label {
         white-space: nowrap;
         transition: opacity .2s ease;
+        font-family: 'SamsungOne', sans-serif;
     }
 
     .sidebar.close .label { opacity: 0; pointer-events: none; }
@@ -135,8 +136,8 @@
         font-size: 14px;
     }
 
-    .marca h1 { margin: 0; font-size: 16px; line-height: 1.2; color: var(--titulo); }
-    .marca p { margin: 2px 0 0; font-size: 12px; line-height: 1.2; color: var(--suave); }
+    .marca h1 { margin: 0; font-size: 16px; line-height: 1.2; color: var(--titulo); font-family: 'SamsungOne', sans-serif; }
+    .marca p { margin: 2px 0 0; font-size: 12px; line-height: 1.2; color: var(--suave); font-family: 'SamsungOne', sans-serif; }
 
     .plegar {
         position: absolute;
@@ -247,8 +248,29 @@
         padding: 12px 12px 40px;
     }
 
-    main h2 { margin: 0 0 6px; font-size: 26px; color: var(--titulo); }
-    .lead { margin: 0 0 22px; color: var(--lead); }
+    main h2 { margin: 0 0 6px; color: var(--titulo); 
+        text-align: fixed;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: "SamsungOne", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: -0.4px;
+        text-decoration: none;
+        margin-top: 0;
+        margin-bottom: 30px;
+        padding: 0;
+    
+    }
+    .lead { margin: 0 0 22px; color: var(--lead);
+        text-align: fixed;
+        font-size: 35px;
+        font-weight: 500;
+        font-family: "SamsungOne", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: -0.2px;
+        text-decoration: none;
+        margin-top: 0;
+        margin-bottom: 30px;
+        padding: 0;
+    }
 
     .panel {
         margin-bottom: 18px;
@@ -258,13 +280,22 @@
         box-shadow: 0 4px 18px rgba(20, 40, 100, 0.1);
     }
 
-    .panel h3 { margin: 0 0 16px; font-size: 16px; color: var(--titulo); }
+    .panel h3 { margin: 0 0 16px; font-size: 16px; color: var(--titulo);
+        font-family: 'SamsungOne', -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+        font-weight: 500;
+        letter-spacing: -0.4px;
+        text-decoration: none;
+        margin-top: 0;
+        padding: 0;
+    
+    }
 
     label {
         display: block;
         margin-bottom: 5px;
         font-size: 13px;
         color: var(--suave);
+        font-family: 'SamsungOne', sans-serif;
     }
 
     input, select, textarea {
@@ -390,6 +421,22 @@
         .span2, .full { grid-column: auto; }
         .panel { padding: 18px 16px; }
     }
+    .h1{
+      font-family: 'SamsungOne', sans-serif;
+      font-size: 24px;
+      color: var(--titulo);
+
+    }
+    .h2{
+      font-family: 'SamsungOne', sans-serif;
+      font-size: 22px;
+      color: var(--titulo);
+    }
+    .h3{
+      font-family: 'SamsungOne', sans-serif;
+      font-size: 18px;
+      color: var(--titulo);
+    }
 </style>
 </head>
 <body>
@@ -413,7 +460,7 @@
   <div class="marca">
     <div class="logo">OR</div>
     <div class="label">
-      <h1>Departamento de Orientación</h1>
+      <h1 class="h1">Departamento de Orientación</h1>
       <p>Canalizaciones De Alumnos</p>
     </div>
   </div>
@@ -444,8 +491,8 @@
 
 <main>
 <section id="registrar">
-  <h2>Registrar canalización</h2>
-  <p class="lead">Escribe el número de control: los datos del alumno se completan solos.</p>
+  <h2 class="lead">Registrar canalización</h2>
+  <p class="h2">Escribe el número de control: los datos del alumno se completan solos.</p>
   <div class="panel">
     <label for="numero_control">Número de control</label>
     <div class="control">
@@ -455,7 +502,7 @@
     <div class="estado" id="estado"></div>
   </div>
   <form id="form" class="panel" autocomplete="off">
-    <h3>Datos del alumno</h3>
+    <h3 class="h3">Datos del alumno</h3>
     <div class="grid">
       <div><label>Apellido paterno</label><input name="apellido_paterno"></div>
       <div><label>Apellido materno</label><input name="apellido_materno"></div>
@@ -469,7 +516,7 @@
       <div class="span2"><label>Nombre de padre o madre</label><input name="nombre_padre_madre"></div>
       <div><label>Teléfono</label><input name="telefono" inputmode="tel"></div>
     </div>
-    <h3 style="margin-top:28px">Atención</h3>
+    <h3 class="h3" style="margin-top:28px">Atención</h3>
     <div class="grid">
       <div><label>Fecha de atención</label><input type="date" name="fecha_atencion"></div>
       <div class="span2"><label>Persona que reporta</label><input name="persona_reporta"></div>
@@ -486,8 +533,8 @@
 </section>
 
 <section id="consultar" hidden>
-  <h2>Consultar y filtrar</h2>
-  <p class="lead">Combina los filtros que necesites; los campos vacíos se ignoran.</p>
+  <h2 class="lead">Consultar y filtrar</h2>
+  <p class="h2">Combina los filtros que necesites; los campos vacíos se ignoran.</p>
   <form id="filtros" class="panel">
     <div class="grid">
       <div><label>Número de control</label><input name="numero_control"></div>
@@ -510,8 +557,8 @@
 </section>
 
 <section id="importar" hidden>
-  <h2>Importar hoja de cálculo</h2>
-  <p class="lead">Sube un archivo .xls o .xlsx. Se convierte a JSON y se carga a la base; si repites la carga, no se duplican registros.</p>
+  <h2 class="lead">Importar hoja de cálculo</h2>
+  <p class="h2">Sube un archivo .xls o .xlsx. Se convierte a JSON y se carga a la base; si repites la carga, no se duplican registros.</p>
   <form id="formImp" class="panel">
     <label for="archivo">Archivo</label>
     <input type="file" id="archivo" name="archivo" accept=".xls,.xlsx">
@@ -519,7 +566,7 @@
     <div id="msgImp"></div>
   </form>
   <div class="panel">
-    <h3>Columnas que reconoce</h3>
+    <h3 class="h3">Columnas que reconoce</h3>
     <p style="margin:0">Número de control, Fecha de atención, Apellido paterno, Apellido materno, Nombre, Generación, Especialidad, Semestre, Grupo, Grado, Turno, Persona que reporta, Motivo, Nombre de padre o madre, Teléfono, Medida de modificación de conducta y Seguimiento de los documentos.</p>
   </div>
 </section>
@@ -635,3 +682,4 @@ $("#formImp").onsubmit = async e => {
 </html>
 <!--
   2x1 en burros D: . pues asies chavos, 637 lineas de paciencia y saliba pero me la insertaron a mi xffffffff pues bueno ya me voy a la documentacion chabos AI se ben.-->
+ 
