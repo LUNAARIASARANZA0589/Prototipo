@@ -1,4 +1,3 @@
-
 import getpass
 #Utilizamos getpass para que la contraseña no se muestre en la terminal al momento de escribirla, es una medida de seguridad, que pues no se quien vaya a usar JASJA. 
 import io
@@ -15,6 +14,7 @@ import tempfile
 #Usamos tempfile para crear archivos temporales, como cuando el usuario sube un archivo de excel para importar canalizaciones, lo guardamos mientras en un archivo temporal y luego lo borramos, para no llenar el disco duro de archivos innecesarios, mientras lo hacemos en JSON
 import time
 #Usamos time para acceder a la hora y fecha del ordenador para usarla en el reporte de canalizacion 
+
 from contextlib import redirect_stdout
 #Usamos contextlib para poder redirigir la salida de la consola a un archivo temporal, para que el usuario pueda ver los resultados de la importación de canalizaciones desde un archivo de excel, que le salga ahi sii salio bien yupi
 from datetime import date
@@ -26,38 +26,50 @@ from bson import ObjectId
 
 from flask import (Flask, jsonify, redirect, render_template, request, send_file,session, url_for)
 from pymongo import DESCENDING
-from werkzeug.security import check_password_hash, generate_password_hash
 
-from gestor import (DATOSALUMNO, DATOSCANALIZACION, DIRECCIONPDFS, fecha, conectar, filtro, pdf, importar, limpiar)
+from werkzeug.security import check_password_hash, generate_password_hash
+#De Flask obtenemos el renderizado de nuestros html (render_template), la posibilidad de convertir aspectos de texto a json (con jsonify), enviar al usuario a páginas distintas después de 
+#cierta acción (url_for), enviar documentos y poder redireccionar al usuario mediante las plantillas/templates que generamos con la interfaz del programa. 
+
+
+
+from gestor import (DATOSALUMNO, DATOSCANALIZACION, DIRECCIONPDFS, fecha,conectar, filtro, pdf, importar, limpiar)
+#Del py general, el gestor, obtenemos datos como los datos de cada alumno, los datos que se usan en una canalizacion, el path(dirección) a la cual guardamos los PDFS y 
+#las distintas funciones que utilizamos, como la fecha del reporte, la conexión a la base de datos, el filtro de datos, la funcion que genera el PDF, la importación de archivos y la limpieza de los campos. 
+
 
 app = Flask(__name__)
-app.config["longitud"] = 20 * 1024 * 1024  
+app.config["CONTENIDO"] = 20 * 1024 * 1024  
+
 db = conectar()
 db.usuarios.create_index("usuario", unique=True)
 
 #La secret key es jejebollo JAJAJASJASJH
 def llavesecreta():
-    if os.getenv("key"):
-        return os.environ["key"]
-    f = Path(".secret_key")  
-    if not f.exists():
-        f.write_text(secrets.token_hex(32))
+    if os.getenv("KEY"):
+        return os.environ["KEY"]
+    rutakey= Path(".secret_key")  
+    if not rutakey.exists():
+        #Si dentro de la carpeta el archivo key no existe, el programa le otorga uno completamente aleatorio
+        #ojo, no le otorga 32 caracteres aleatorios, le otorga 32 bits
+        #esos 32 bits se transforman en 64 caracteres aleatorios, como nuestra secret key: 1af6664a4448d54dcda6314c888063802f1c3695faa3c6f9c25647409af12ed9
+        rutakey.write_text(secrets.token_hex(32))
         try:
-            f.chmod(0o600)
+            rutakey.chmod(0o600)
         except OSError:
             pass
-    return f.read_text().strip()
+    return rutakey.read_text().strip()
 
 
 app.secret_key = llavesecreta()
-app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax", PERMANENT_SESSION_LIFETIME=8 * 3600)  
+app.config.update(COOKIESESSION=True, COOKIE="Lax", TIEMPOSESION=8 * 3600)  
 INTENTOS = {} 
-MAX_FALLOS, BLOQUEO_SEG = 5, 300
+FALLOSMAX=5
+BLOQUEO = 300
 
 
 def crearusuario(usuario, clave, rol="orientador"):
-    db.usuarios.update_one({"usuario": usuario.strip().lower()},
-                           {"$set": {"clave": generate_password_hash(clave), "rol": rol}}, upsert=True)
+    db.usuarios.update_one({"usuario": usuario.strip().lower()}, {"$set": {"clave": generate_password_hash(clave), "rol": rol}}, upsert=True)
 
 
 @app.before_request
@@ -86,7 +98,7 @@ def login():
                 session["usuario"], session["rol"] = u["usuario"], u.get("rol", "orientador")
                 return redirect(url_for("inicio"))
             fallos += 1
-            INTENTOS[ip] = (fallos, time.time() + BLOQUEO_SEG if fallos >= MAX_FALLOS else 0)
+            INTENTOS[ip] = (fallos, time.time() + BLOQUEO if fallos >= FALLOSMAX else 0)
             error = "Usuario o contraseña incorrectos."
     return render_template("login.html", error=error)
 
@@ -112,9 +124,7 @@ def autocompletar():
     q = request.args.get("q", "").strip()
     if not q:
         return jsonify([])
-    cur = db.alumnos.find({"numero_control": {"$regex": "^" + re.escape(q)}},
-                          {"_id": 0, "numero_control": 1, "nombre": 1,
-                           "apellido_paterno": 1, "apellido_materno": 1}).limit(8)
+    cur = db.alumnos.find({"numero_control": {"$regex": "^" + re.escape(q)}},{"_id": 0, "numero_control": 1, "nombre": 1, "apellido_paterno": 1, "apellido_materno": 1}).limit(8)
     return jsonify(list(cur))
 
 
@@ -138,8 +148,7 @@ def crear():
     datos["fecha_atencion"] = fecha(datos["fecha_atencion"]) or date.today().isoformat()
     datos["canalizaciones_anteriores"] = db.canalizaciones.count_documents({"numero_control": control})
     datos["registrado_por"] = session["usuario"]  
-    db.alumnos.update_one({"numero_control": control},
-                          {"$set": {k: datos[k] for k in DATOSALUMNO}}, upsert=True)
+    db.alumnos.update_one({"numero_control": control},{"$set": {k: datos[k] for k in DATOSALUMNO}}, upsert=True)
     res = db.canalizaciones.insert_one(datos)
     return jsonify({"id": str(res.inserted_id), "anteriores": datos["canalizaciones_anteriores"]})
 
@@ -208,3 +217,4 @@ if __name__ == "__main__":
     if db.usuarios.count_documents({}) == 0:
         primerusuario()
     app.run(host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "5000")), debug=False)
+
