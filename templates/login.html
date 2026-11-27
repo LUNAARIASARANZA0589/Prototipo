@@ -67,6 +67,7 @@
         text-align: center;
         color: #000000;
         font-size: 17px;
+        font-family: "SamsungOne", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
     }
     .inl{
             border: none;
@@ -78,21 +79,28 @@
             max-height: 30px;
             font-size: 16px;
             color: #414244;
-        }
-        .button{
-            background-color: rgb(94, 129, 194);
-            color:white;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: 600;
             font-family: "SamsungOne", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
-            letter-spacing: -0.2px;
-            text-decoration: none;
-            border: none;
-            padding: 15px 30px;
-            cursor: pointer;
-            width: 220px;
         }
+    .button{
+        background-color: rgb(94, 129, 194);
+        color:white;
+        border-radius: 30px;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: "SamsungOne", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+        letter-spacing: -0.2px;
+        text-decoration: none;
+        border: none;
+        padding: 15px 30px;
+        cursor: pointer;
+        width: 220px;
+    }
+    form{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 </style>
 </head>
 <body>
@@ -108,18 +116,20 @@
         <h1 class="hpanel">Sistema Gestor De Base De Datos Para Orientacion Educativa Jaguar</h1>
 </br>
 </br>
-</br>
-<form method="post">
-<label for="usuario">Usuario</label>
-<input id="usuario" name="usuario" autocomplete="username" autofocus required>
-<label for="clave">Contraseña</label>
-<input id="clave" name="clave" type="password" autocomplete="current-password" required>
-<button type="submit">Entrar</button>
-{% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}">
+
+<form class="form" method="post">
+<label class="p" for="usuario">Usuario</label>
+<input class="inl" id="usuario" name="usuario" autocomplete="username" autofocus required>
+<label class="p" for="clave">Contraseña</label>
+<input class="inl" id="clave" name="clave" type="password" autocomplete="current-password" required></input>
 </br>
 </br>
+<button class="button" type="submit">Entrar</button>
+
 </br>
 </br>
+</br>
+
 </br>
     </form>
 </div>
