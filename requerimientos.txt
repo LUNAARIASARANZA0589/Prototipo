@@ -1,0 +1,10 @@
+Pathlib
+contextlib
+bson
+flask
+pymongo
+werkzeug.security
+shlex
+pandas
+reportlab
+prompt_toolkit
