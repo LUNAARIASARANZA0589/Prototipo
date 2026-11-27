@@ -1,78 +1,448 @@
-<!-- esto no lo hice yo, lo hizo claude jajajajjs, ahi se hacen un diseño wapo, gracias -->
-
-
+<!--la sidebar ocupa como el no se, 80% del tamaño del codigo. El modo oscuro es mas comodo a la vista y pues reluce los colores que me pidieron xpppp-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Orientación · Canalizaciones</title>
+<title>Sistema Gestor de Base de datos de orientación </title>
 <style>
-:root{
-  --vino:#4E0F22; --borgona:#7A1F3D; --rosa:#B5586F; --hueso:#F8F2F3; --linea:#E3D2D6;
-  --tinta:#2B1219; --suave:#7C6168; --blanco:#fff; --ok:#2F6B4F;
-  --serif:Georgia,"Times New Roman",serif; --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-}
-*{box-sizing:border-box}
-body{margin:0;font:15px/1.5 var(--sans);color:var(--tinta);background:var(--hueso);display:grid;grid-template-columns:230px 1fr;min-height:100vh}
-aside{background:var(--vino);color:#F3DDE3;padding:28px 18px;position:sticky;top:0;height:100vh}
-aside h1{font:700 21px/1.2 var(--serif);margin:0 0 4px;color:#fff}
-aside p{margin:0 0 28px;font-size:13px;color:#D3A9B5}
-nav button{display:block;width:100%;text-align:left;background:none;border:0;border-left:3px solid transparent;color:#EBCDD5;padding:11px 12px;font:inherit;cursor:pointer;border-radius:0 6px 6px 0}
-nav button:hover{background:rgba(255,255,255,.07)}
-nav button[aria-selected=true]{border-left-color:#E7B7C4;background:rgba(255,255,255,.12);color:#fff;font-weight:600}
-main{padding:34px 40px 60px;max-width:1100px;width:100%}
-h2{font:700 26px/1.2 var(--serif);color:var(--vino);margin:0 0 6px}
-.lead{color:var(--suave);margin:0 0 24px}
-section[hidden]{display:none}
-.panel{background:var(--blanco);border:1px solid var(--linea);border-radius:10px;padding:22px;margin-bottom:18px}
-.panel h3{font:600 17px var(--serif);margin:0 0 14px;color:var(--borgona)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
-label{display:block;font-size:13px;font-weight:600;color:var(--suave);margin-bottom:4px}
-input,textarea,select{width:100%;font:inherit;padding:9px 11px;border:1px solid #CDB3BA;border-radius:6px;background:#fff;color:var(--tinta)}
-textarea{min-height:76px;resize:vertical}
-input:focus,textarea:focus{outline:3px solid rgba(122,31,61,.25);border-color:var(--borgona)}
-.span2{grid-column:span 2}.full{grid-column:1/-1}
-.control{position:relative;max-width:420px}
-.control input{font:600 22px var(--serif);padding:12px 14px;letter-spacing:.03em;border:2px solid var(--borgona)}
-.sug{position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid var(--borgona);border-top:0;border-radius:0 0 8px 8px;z-index:5;box-shadow:0 8px 20px rgba(78,15,34,.18)}
-.sug div{padding:9px 14px;cursor:pointer;display:flex;justify-content:space-between;gap:12px}
-.sug div:hover,.sug div.on{background:#F4E4E8}
-.sug small{color:var(--suave)}
-.estado{margin-top:10px;font-size:14px;min-height:21px}
-.estado.ok{color:var(--ok)} .estado.nuevo{color:var(--borgona)}
-.btn{background:var(--borgona);color:#fff;border:0;padding:10px 20px;border-radius:6px;font:600 15px var(--sans);cursor:pointer;text-decoration:none;display:inline-block}
-.btn:hover{background:var(--vino)}
-.btn.sec{background:#fff;color:var(--borgona);border:1px solid var(--borgona)}
-.btn.sec:hover{background:#F4E4E8}
-.acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-.tabla{overflow-x:auto}
-table{border-collapse:collapse;width:100%;font-size:14px}
-th{background:var(--vino);color:#fff;text-align:left;padding:9px 10px;font-weight:600;white-space:nowrap}
-td{padding:9px 10px;border-bottom:1px solid var(--linea);vertical-align:top}
-tr:nth-child(even) td{background:#FBF7F8}
-.vacio{padding:26px;text-align:center;color:var(--suave)}
-.msg{padding:12px 14px;border-radius:6px;margin-top:14px;background:#F4E4E8;border-left:4px solid var(--borgona)}
-.aviso{position:fixed;right:24px;bottom:24px;background:var(--vino);color:#fff;padding:12px 18px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
-@media(max-width:800px){body{grid-template-columns:1fr}aside{position:static;height:auto;padding:16px}main{padding:20px}nav{display:flex;gap:4px;flex-wrap:wrap}nav button{width:auto;border-left:0;border-bottom:3px solid transparent;border-radius:0}nav button[aria-selected=true]{border-bottom-color:#E7B7C4}.span2{grid-column:auto}}
+    /* la fuente cfff */
+    @font-face {
+        font-family: 'SamsungOne';
+        src: url('ruta/a/SamsungOne-400.woff2') format('woff2'),
+            url('ruta/a/SamsungOne-400.woff') format('woff');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+    @font-face {
+        font-family: 'SamsungOne';
+        src: url('ruta/a/SamsungOne-700.woff2') format('woff2'),
+            url('ruta/a/SamsungOne-700.woff') format('woff');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    :root {
+        --primario: #3f6fe0;
+        --panel: #ffffff;
+        --texto: #26304a;
+        --suave: #6b7590;
+        --borde: #dbe2f2;
+        --campo: #f3f6fd;
+        --titulo: #14224a;
+        --lead: #263a6e;
+        --ancho: 250px;
+        --ancho-cerrado: 72px;
+    }
+
+    html[data-theme="dark"] {
+        --panel: #1c2136;
+        --texto: #d3d8ee;
+        --suave: #8d96b8;
+        --borde: #2d3453;
+        --campo: #252b45;
+        --titulo: #eef1fc;
+        --lead: #a3aed2;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    body {
+        margin: 0;
+        display: flex;
+        gap: 20px;
+        padding: 16px;
+        min-height: 100vh;
+        color: var(--texto);
+        font-family: 'SamsungOne', sans-serif;
+        font-size: 15px;
+        background-color: #749feeb2;
+        background-image:
+            radial-gradient(circle at 0% 0%, rgb(77, 127, 233) 0%, transparent 45%),
+            radial-gradient(circle at 18% 5%, rgba(83, 177, 255, 0.45) 0%, transparent 40%);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    html[data-theme="dark"] body {
+        background-color: #11162a;
+        background-image:
+            radial-gradient(circle at 0% 0%, rgba(56, 88, 200, 0.55) 0%, transparent 45%),
+            radial-gradient(circle at 18% 5%, rgba(40, 120, 200, 0.3) 0%, transparent 40%);
+    }
+
+    input, select, textarea, button { font: inherit; }
+
+    .sidebar {
+        position: sticky;
+        top: 16px;
+        align-self: flex-start;
+        flex-shrink: 0;
+        width: var(--ancho);
+        min-height: calc(100vh - 32px);
+        padding: 16px 12px;
+        display: flex;
+        flex-direction: column;
+        background: var(--panel);
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(20, 40, 100, 0.18);
+        transition: width .3s ease, background .3s ease;
+    }
+
+    .sidebar.close { width: var(--ancho-cerrado); }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .label {
+        white-space: nowrap;
+        transition: opacity .2s ease;
+    }
+
+    .sidebar.close .label { opacity: 0; pointer-events: none; }
+
+    .marca {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 48px;
+        margin-bottom: 22px;
+        padding-left: 4px;
+        overflow: hidden;
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        background: var(--primario);
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .marca h1 { margin: 0; font-size: 16px; line-height: 1.2; color: var(--titulo); }
+    .marca p { margin: 2px 0 0; font-size: 12px; line-height: 1.2; color: var(--suave); }
+
+    .plegar {
+        position: absolute;
+        top: 30px;
+        right: -13px;
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: var(--primario);
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(63, 111, 224, 0.45);
+    }
+
+    .plegar .icon { width: 14px; height: 14px; stroke-width: 2.4; transition: transform .3s ease; }
+    .sidebar:not(.close) .plegar .icon { transform: rotate(180deg); }
+
+    nav { display: flex; flex-direction: column; gap: 6px; }
+
+    .item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+        height: 46px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--texto);
+        text-align: left;
+        text-decoration: none;
+        cursor: pointer;
+        overflow: hidden;
+        transition: background .2s ease, color .2s ease;
+    }
+
+    .item:hover { background: var(--campo); }
+    .item[aria-selected="true"] { background: var(--primario); color: #fff; }
+    .item:focus-visible, .plegar:focus-visible { outline: 2px solid var(--primario); outline-offset: 2px; }
+
+    .pie {
+        margin-top: auto;
+        padding-top: 16px;
+        border-top: 1px solid var(--borde);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .sesion {
+        padding: 0 14px 4px;
+        font-size: 13px;
+        line-height: 1.4;
+        color: var(--suave);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .sesion b { color: var(--texto); }
+    .sidebar.close .sesion { display: none; }
+
+    .modo {
+        justify-content: space-between;
+        background: var(--campo);
+    }
+
+    .modo:hover { background: var(--borde); }
+    .modo-izq { display: flex; align-items: center; gap: 14px; }
+
+    .switch {
+        position: relative;
+        width: 36px;
+        height: 20px;
+        flex-shrink: 0;
+        border-radius: 999px;
+        background: var(--borde);
+        transition: background .25s ease;
+    }
+
+    .switch::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #fff;
+        transition: transform .25s ease;
+    }
+
+    .modo[aria-checked="true"] .switch { background: var(--primario); }
+    .modo[aria-checked="true"] .switch::after { transform: translateX(16px); }
+
+    .sidebar.close .modo { padding: 0; justify-content: center; }
+    .sidebar.close .modo-izq { display: none; }
+
+    main {
+        flex: 1;
+        min-width: 0;
+        max-width: 1040px;
+        padding: 12px 12px 40px;
+    }
+
+    main h2 { margin: 0 0 6px; font-size: 26px; color: var(--titulo); }
+    .lead { margin: 0 0 22px; color: var(--lead); }
+
+    .panel {
+        margin-bottom: 18px;
+        padding: 22px 24px;
+        background: var(--panel);
+        border-radius: 14px;
+        box-shadow: 0 4px 18px rgba(20, 40, 100, 0.1);
+    }
+
+    .panel h3 { margin: 0 0 16px; font-size: 16px; color: var(--titulo); }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 13px;
+        color: var(--suave);
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--borde);
+        border-radius: 8px;
+        background: var(--campo);
+        color: var(--texto);
+        transition: border-color .15s ease, background .15s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: var(--primario);
+        background: var(--panel);
+    }
+
+    input[readonly] { opacity: .7; }
+    textarea { min-height: 78px; resize: vertical; }
+    input[type="file"] { padding: 9px 12px; cursor: pointer; }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px 18px;
+    }
+
+    .span2 { grid-column: span 2; }
+    .full { grid-column: 1 / -1; }
+
+    .control { position: relative; max-width: 420px; }
+
+    .sug {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        z-index: 5;
+        max-height: 260px;
+        overflow-y: auto;
+        background: var(--panel);
+        border: 1px solid var(--borde);
+        border-radius: 10px;
+        box-shadow: 0 10px 26px rgba(20, 40, 100, 0.18);
+    }
+
+    .sug div {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        padding: 9px 14px;
+        cursor: pointer;
+    }
+
+    .sug div:hover, .sug div.on { background: var(--campo); }
+    .sug small { color: var(--suave); font-size: 12px; }
+
+    .estado { margin-top: 14px; padding: 10px 14px; border-radius: 8px; font-size: 14px; }
+    .estado:empty { display: none; }
+    .estado.ok { background: rgba(46, 160, 90, .15); color: #1f8a4c; }
+    .estado.nuevo { background: rgba(230, 160, 30, .18); color: #a86d00; }
+
+    .acciones { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px; }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--primario);
+        color: #fff;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: filter .15s ease;
+    }
+
+    .btn:hover { filter: brightness(1.1); }
+    .btn.sec { background: var(--campo); color: var(--texto); border: 1px solid var(--borde); }
+
+    .tabla { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+    th {
+        padding: 8px 10px;
+        text-align: left;
+        font-size: 12px;
+        color: var(--suave);
+        border-bottom: 1px solid var(--borde);
+        white-space: nowrap;
+    }
+
+    td { padding: 10px; border-bottom: 1px solid var(--borde); vertical-align: top; }
+    tbody tr:hover { background: var(--campo); }
+    td a { color: var(--primario); font-weight: 700; text-decoration: none; }
+
+    .vacio { padding: 30px 10px; text-align: center; color: var(--suave); }
+    .msg { margin-top: 16px; padding: 10px 14px; border-radius: 8px; background: var(--campo); }
+
+    .aviso {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 20;
+        padding: 12px 20px;
+        border-radius: 10px;
+        background: #1d2438;
+        color: #fff;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 1000px) {
+        .grid { grid-template-columns: repeat(2, 1fr); }
+        .full { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 760px) {
+        body { gap: 14px; padding: 10px; }
+        main { padding: 8px 0 30px; }
+        .grid { grid-template-columns: 1fr; }
+        .span2, .full { grid-column: auto; }
+        .panel { padding: 18px 16px; }
+    }
 </style>
 </head>
 <body>
-<aside>
-  <h1>Departamento de Orientación</h1>
-  <p>Canalizaciones de alumnos</p>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-nuevo" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 12v6"/><path d="M9 15h6"/></symbol>
+    <symbol id="i-buscar" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M21 21l-5-5"/></symbol>
+    <symbol id="i-subir" viewBox="0 0 24 24"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></symbol>
+    <symbol id="i-salir" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></symbol>
+    <symbol id="i-luna" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+    <symbol id="i-flecha" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></symbol>
+  </defs>
+</svg>
+
+<aside class="sidebar" id="sidebar">
+  <button class="plegar" id="plegar" type="button" aria-label="Alternar barra lateral">
+    <svg class="icon"><use href="#i-flecha"/></svg>
+  </button>
+
+  <div class="marca">
+    <div class="logo">OR</div>
+    <div class="label">
+      <h1>Departamento de Orientación</h1>
+      <p>Canalizaciones De Alumnos</p>
+    </div>
+  </div>
+
   <nav role="tablist">
-    <button role="tab" aria-selected="true" data-vista="registrar">Registrar canalización</button>
-    <button role="tab" aria-selected="false" data-vista="consultar">Consultar y filtrar</button>
-    <button role="tab" aria-selected="false" data-vista="importar">Importar hoja de cálculo</button>
+    <button class="item" role="tab" aria-selected="true" data-vista="registrar" title="Registrar canalización">
+      <svg class="icon"><use href="#i-nuevo"/></svg><span class="label">Registrar canalización</span>
+    </button>
+    <button class="item" role="tab" aria-selected="false" data-vista="consultar" title="Consultar y filtrar">
+      <svg class="icon"><use href="#i-buscar"/></svg><span class="label">Consultar y filtrar</span>
+    </button>
+    <button class="item" role="tab" aria-selected="false" data-vista="importar" title="Importar hoja de cálculo">
+      <svg class="icon"><use href="#i-subir"/></svg><span class="label">Importar hoja</span>
+    </button>
   </nav>
-  <div style="position:absolute;left:18px;right:18px;bottom:24px;font-size:13px;color:#D3A9B5">
-    Sesión: <b style="color:#fff">{{ usuario }}</b><br><a href="/logout" style="color:#F3DDE3">Cerrar sesión</a>
+
+  <div class="pie">
+    <div class="sesion">Sesión: <b>{{ usuario }}</b></div>
+    <a class="item" href="/logout" title="Cerrar sesión">
+      <svg class="icon"><use href="#i-salir"/></svg><span class="label">Cerrar sesión</span>
+    </a>
+    <button class="item modo" id="modo" type="button" role="switch" aria-checked="false" title="Modo oscuro">
+      <span class="modo-izq"><svg class="icon"><use href="#i-luna"/></svg><span class="label">Modo oscuro</span></span>
+      <span class="switch"></span>
+    </button>
   </div>
 </aside>
 
 <main>
-<!-- REGISTRAR -->
 <section id="registrar">
   <h2>Registrar canalización</h2>
   <p class="lead">Escribe el número de control: los datos del alumno se completan solos.</p>
@@ -99,7 +469,7 @@ tr:nth-child(even) td{background:#FBF7F8}
       <div class="span2"><label>Nombre de padre o madre</label><input name="nombre_padre_madre"></div>
       <div><label>Teléfono</label><input name="telefono" inputmode="tel"></div>
     </div>
-    <h3 style="margin-top:24px">Atención</h3>
+    <h3 style="margin-top:28px">Atención</h3>
     <div class="grid">
       <div><label>Fecha de atención</label><input type="date" name="fecha_atencion"></div>
       <div class="span2"><label>Persona que reporta</label><input name="persona_reporta"></div>
@@ -115,7 +485,6 @@ tr:nth-child(even) td{background:#FBF7F8}
   </form>
 </section>
 
-<!-- CONSULTAR -->
 <section id="consultar" hidden>
   <h2>Consultar y filtrar</h2>
   <p class="lead">Combina los filtros que necesites; los campos vacíos se ignoran.</p>
@@ -140,7 +509,6 @@ tr:nth-child(even) td{background:#FBF7F8}
   <div class="panel tabla" id="resultados"></div>
 </section>
 
-<!-- IMPORTAR -->
 <section id="importar" hidden>
   <h2>Importar hoja de cálculo</h2>
   <p class="lead">Sube un archivo .xls o .xlsx. Se convierte a JSON y se carga a la base; si repites la carga, no se duplican registros.</p>
@@ -158,21 +526,32 @@ tr:nth-child(even) td{background:#FBF7F8}
 </main>
 
 <script>
-// Si la sesión vence, regresa al inicio de sesión
 const _fetch = window.fetch;
 window.fetch = async (...a) => { const r = await _fetch(...a); if (r.status === 401) location.href = "/login"; return r; };
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const aviso = t => { const a = document.createElement("div"); a.className = "aviso"; a.textContent = t; document.body.append(a); setTimeout(() => a.remove(), 3200); };
 
-// Navegación
+const lateral = $("#sidebar"), modo = $("#modo");
+if (innerWidth < 760) lateral.classList.add("close");
+$("#plegar").onclick = () => lateral.classList.toggle("close");
+
+function poner(oscuro) {
+  document.documentElement.dataset.theme = oscuro ? "dark" : "light";
+  modo.setAttribute("aria-checked", oscuro);
+  try { localStorage.setItem("tema", oscuro ? "dark" : "light"); } catch (e) {}
+}
+let guardado = null;
+try { guardado = localStorage.getItem("tema"); } catch (e) {}
+poner(guardado === "dark");
+modo.onclick = () => poner(modo.getAttribute("aria-checked") !== "true");
+
 $$("nav button").forEach(b => b.onclick = () => {
   $$("nav button").forEach(x => x.setAttribute("aria-selected", x === b));
   $$("main section").forEach(s => s.hidden = s.id !== b.dataset.vista);
   if (b.dataset.vista === "consultar") consultar();
 });
 
-// Autocompletado por número de control
 const inp = $("#numero_control"), sug = $("#sug"), form = $("#form"); let t, sel = -1;
 const hoy = () => new Date().toISOString().slice(0, 10);
 form.fecha_atencion.value = hoy();
@@ -228,7 +607,6 @@ form.onsubmit = async e => {
   $("#estado").textContent = "";
 };
 
-// Consultar
 const filtros = $("#filtros");
 const qs = () => new URLSearchParams([...new FormData(filtros)].filter(([, v]) => v.trim())).toString();
 async function consultar() {
@@ -243,7 +621,6 @@ async function consultar() {
 filtros.onsubmit = e => { e.preventDefault(); consultar(); };
 $("#limpiar").onclick = () => { filtros.reset(); consultar(); };
 
-// Importar
 $("#formImp").onsubmit = async e => {
   e.preventDefault();
   const f = $("#archivo").files[0];
@@ -256,3 +633,5 @@ $("#formImp").onsubmit = async e => {
 </script>
 </body>
 </html>
+<!--
+  2x1 en burros D: . pues asies chavos, 637 lineas de paciencia y saliba pero me la insertaron a mi xffffffff pues bueno ya me voy a la documentacion chabos AI se ben.-->
